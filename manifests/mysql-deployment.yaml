@@ -75,12 +75,12 @@ spec:
         # MYSQL_ROOT_PASSWORD | MYSQL_PASSWORD
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
-            configMapKeyRef:
+            secretKeyRef:
               name: database
               key: root-password
         - name: MYSQL_PASSWORD
           valueFrom:
-            configMapKeyRef:
+            secretKeyRef:
               name: database
               key: user-password
         ##
@@ -90,21 +90,24 @@ spec:
       ##
       # define volume mounts here, be sure to reference
       # the PVC in your container spec
-        volumeMounts:
+        volumeMounts: 
+          - name: mysql-persistent-storage
+            mountPath: /var/lib/mysql
+      volumes:
         - name: mysql-persistent-storage
-          mountPath: /var/lib/mysql
-      volumes: 
-      - name: mysql-persistent-storage
-        persistentVolumeClaim:
-          claimName: mysql-pv-claim
+          persistentVolumeClaim:
+            claimName: mysql-pv-claim
       ##
 ---
 ##
 # Create persistent volume claim here
 apiVersion: v1
-kind: persistentVolumeClaim
+kind: PersistentVolumeClaim
 metadata:
   name: mysql-pv-claim
+  labels:
+    app: wordpress
+    tier: mysql
 spec:
   accessModes:
     - ReadWriteOnce

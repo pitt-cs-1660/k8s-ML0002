@@ -98,11 +98,13 @@ spec:
 ##
 # Create persistent volume claim here
 ##
-
 apiVersion: v1
-kind: persistentVolumeClaim
+kind: PersistentVolumeClaim
 metadata:
-  name: wp-pv-claim
+  name:  wp-pv-claim
+  labels:
+    app: wordpress
+    tier: mysql
 spec:
   accessModes:
     - ReadWriteOnce
